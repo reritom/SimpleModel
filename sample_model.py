@@ -10,23 +10,23 @@ class Ticket(metaclass=Model):
 class User(metaclass=Model):
     name: str
     email: str
-    aliases: [str]
 
-class Card(metaclass=Model):
+class Hotel(metaclass=Model):
     vendor: str
     code: str
 
-class Cash(metaclass=Model):
+class Shop(metaclass=Model):
     code: str
 
 class Business(User, metaclass=Model):
     business_name: str
     business_id: str
     description: str
-    accepted_payments: (Card, Cash,)
+    business_type: (Hotel, Shop,)
+    aliases: [Hotel]
 
     def logic(self):
-        print("logic")
+        print("Business is {}".format(self.business_name))
 
 class Holder(User, metaclass=Model):
     holder_id: str

@@ -7,4 +7,9 @@ class Enum():
 
     @classmethod
     def validate(cls, value):
-        return type(value) in cls.definitions
+        if not type(value) in cls.definitions:
+            raise TypeError("Value of type {} does not fit in Enum definitions {}".format(
+                type(value),
+                cls.definitions
+            ))
+        return value

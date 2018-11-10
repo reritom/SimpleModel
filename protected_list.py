@@ -13,11 +13,14 @@ class ProtectedList(list):
             ))
         return value
 
+    def __init__(self, iterator=[]):
+        return super().__init__([self.validate(value) for value in iterator])
+
     def append(self, value):
         return super().append(self.validate(value))
 
     def insert(self, index, value):
         return super().insert(index, self.validate(value))
 
-    def extend(self, values):
-        return super().extend([self.validate(value) for value in values])
+    def extend(self, iterator):
+        return super().extend([self.validate(value) for value in iterator])
