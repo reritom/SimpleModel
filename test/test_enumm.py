@@ -1,5 +1,4 @@
-from enumm import Enum
-
+from components.enumm import Enum
 import unittest
 
 class TestEnum(unittest.TestCase):

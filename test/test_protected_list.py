@@ -1,7 +1,7 @@
-from protected_list import ProtectedList
+from components.protected_list import ProtectedList
 import unittest
 
-class TestAdd(unittest.TestCase):
+class TestProtectedList(unittest.TestCase):
     def test_creation_using_of(self):
         self.assertTrue(isinstance(ProtectedList.of(str), type))
 

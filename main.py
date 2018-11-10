@@ -1,5 +1,5 @@
 from sample_model import User, Business, Hotel# Ticket
-from model import Model
+from components.model import Model
 '''
 user = User()
 print("User descriptors {}".format(user.descriptors))

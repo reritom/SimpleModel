@@ -1,10 +1,10 @@
 from datetime import datetime
-from protected_list import ProtectedList
-from enum import Enum
+from components.protected_list import ProtectedList
+from components.enumm import Enum
 
-implicit_converter = {str: lambda value: str(value),
-                      int: lambda value: int(value),
-                      bool: lambda value: str(value).lower() in [1, 'true', 'y'],
+implicit_converter = {#str: lambda value: str(value),
+                      #int: lambda value: int(value),
+                      #bool: lambda value: str(value).lower() in [1, 'true', 'y'],
                       datetime: lambda value: datetime.strptime(value, '%b %d %Y %I:%M%p')} # 'Jun 1 2005  1:33PM'
 
 class Model(type):
@@ -89,7 +89,7 @@ class Model(type):
             return ProtectedList.of(value[0])
 
         elif isinstance(value, tuple):
-            return Enum.of(list(value))
+            return Enum.of(*value)
 
         else:
             raise TypeError("Unable to parse annotation value {}".format(value))
