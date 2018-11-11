@@ -18,5 +18,8 @@ print(business.__dict__)
 print(business.__dict__)
 '''
 new_business = Business(name="Hello", aliases=[Hotel(code="Artemis")])
+print("Business is instance {}".format(isinstance(new_business, Business)))
 new_business.business_type = Hotel(code="Windsor")
-print(new_business)
+print("New business is {}".format(new_business))
+new_business.business_type = 1
+print(new_business.business_type)

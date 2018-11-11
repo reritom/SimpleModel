@@ -1,24 +1,24 @@
 from components.model import Model
 from datetime import datetime
-
-class Ticket(metaclass=Model):
+'''
+class Ticket(Model):
     number: str
     holder: str
     created: datetime
     options: dict
-
-class User(metaclass=Model):
+'''
+class User(Model):
     name: str
     email: str
 
-class Hotel(metaclass=Model):
+class Hotel(Model):
     vendor: str
     code: str
 
-class Shop(metaclass=Model):
+class Shop(Model):
     code: str
 
-class Business(User, metaclass=Model):
+class Business(User):
     business_name: str
     business_id: str
     description: str
@@ -27,8 +27,8 @@ class Business(User, metaclass=Model):
 
     def logic(self):
         print("Business is {}".format(self.business_name))
-
-class Holder(User, metaclass=Model):
+'''
+class Holder(User):
     holder_id: str
-
+'''
 

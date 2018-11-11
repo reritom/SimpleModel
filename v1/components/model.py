@@ -2,40 +2,39 @@ from datetime import datetime
 from components.protected_list import ProtectedList
 from components.enumm import Enum
 
-implicit_converter = {#str: lambda value: str(value),
-                      #int: lambda value: int(value),
-                      #bool: lambda value: str(value).lower() in [1, 'true', 'y'],
-                      datetime: lambda value: datetime.strptime(value, '%b %d %Y %I:%M%p')} # 'Jun 1 2005  1:33PM'
+implicit_converter = {datetime: lambda value: datetime.strptime(value, '%b %d %Y %I:%M%p')} # 'Jun 1 2005  1:33PM'
 
-class Model(type):
-    def init(self, **kwargs):
+class Model():
+    def __init__(self, **kwargs):
         # If we have any kwargs, try and set them if they fit the definitions
         for key, value in kwargs.items():
             if key in self.descriptors:
                 self.__setattr__(key, value)
 
-    def __new__(cls, name, bases, dct):
+    def __new__(cls, *args, **kwargs):
         # Get all the descriptors for this class from the annotations and parent annotations
-        base_annotations = {key: cls.parse_annotation_value(value) for base in bases for key, value in base.__dict__.get('__annotations__').items()}
-        cls_annotations = {key: cls.parse_annotation_value(value) for key, value in dct.get('__annotations__').items()}
+        cls = object.__new__(cls, *args, **kwargs)=
+
+        base_annotations = {
+            key: cls.parse_annotation_value(value)
+            for base in cls.__bases__
+            for key, value
+            in base.__dict__.get('__annotations__', {}).items()
+        }
+
+        cls_annotations = {
+            key: cls.parse_annotation_value(value)
+            for key, value
+            in cls.__annotations__.items()
+        }
+
         annotations = {**cls_annotations, **base_annotations}
+        cls.descriptors = annotations
 
-        dct.update({
-            'descriptors': annotations,
-            '__setattr__': cls.strict_set,
-            '__getattr__': cls.__getattr__,
-            '__init__': cls.init,
-            'serialise': cls.serialise,
-            #'__str__': lambda self: str(self.serialise())
-        })
-
-        # Create a new class
-        x = super().__new__(cls, name, bases, dct)
-        return x
+        return cls
 
     def serialise(self):
         serialised = {}
-        print("In serialise")
 
         for key in self.__dict__:
             definition = self.descriptors[key]
@@ -50,11 +49,12 @@ class Model(type):
                 ]
 
             elif Enum in definition.__bases__:
-                serialised[key] = (
+                sublevel = (
                     self.__dict__[key].serialise()
                     if hasattr(self.__dict__[key], 'serialise')
                     else self.__dict__[key]
                 )
+                serialised[key] = {self.__dict__[key].__class__.__name__: sublevel}
 
             elif hasattr(self.__dict__[key], 'serialise'):
                 serialised[key] = self.__dict__[key].serialise()
@@ -63,7 +63,7 @@ class Model(type):
                 serialised[key] = self.__dict__[key]
 
             else:
-                pass            
+                pass
 
         return serialised
 
@@ -105,7 +105,8 @@ class Model(type):
         else:
             raise TypeError("Unable to parse annotation value {}".format(value))
 
-    def strict_set(self, key, value):
+    def __setattr__(self, key, value):
+        print("In set attr")
         definition = self.descriptors[key]
 
         if not isinstance(value, definition):
