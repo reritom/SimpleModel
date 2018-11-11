@@ -3,8 +3,19 @@ from components.enumm import Enum
 import unittest
 
 class GenericSample(metaclass=Model):
-    base: str
+    gbase: str
 
 class EnumSample(metaclass=Model):
     base: (str,)
     other: (GenericSample,)
+
+
+
+expected = {
+   'base':'Hello',
+   'other':{
+      'GenericSample':{
+         'gbase':'Hello'
+      }
+   }
+}

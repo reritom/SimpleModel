@@ -1,4 +1,4 @@
-from model import Model
+from components.model import Model
 from datetime import datetime
 
 class Ticket(metaclass=Model):

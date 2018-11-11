@@ -26,7 +26,7 @@ class Model(type):
             '__getattr__': cls.__getattr__,
             '__init__': cls.init,
             'serialise': cls.serialise,
-            '__str__': lambda self: str(self.serialise())
+            #'__str__': lambda self: str(self.serialise())
         })
 
         # Create a new class
@@ -35,24 +35,35 @@ class Model(type):
 
     def serialise(self):
         serialised = {}
+        print("In serialise")
 
         for key in self.__dict__:
-            print("Serialising {}".format(key))
             definition = self.descriptors[key]
 
             if ProtectedList in definition.__bases__:
-                print("Is a protected list {}".format(self.__dict__[key][0]))
-                print(definition.__bases__)
-                serialised[key] = [value.serialise() if isinstance(value, Model) else value for value in self.__dict__[key]]
+                serialised[key] = [
+                    value.serialise()
+                    if hasattr(value, 'serialise')
+                    else value
+                    for value
+                    in self.__dict__[key]
+                ]
 
             elif Enum in definition.__bases__:
-                serialised[key] = self.__dict__[key].serialise() if isinstance(self.__dict__[key], Model) else self.__dict__[key]
+                serialised[key] = (
+                    self.__dict__[key].serialise()
+                    if hasattr(self.__dict__[key], 'serialise')
+                    else self.__dict__[key]
+                )
+
+            elif hasattr(self.__dict__[key], 'serialise'):
+                serialised[key] = self.__dict__[key].serialise()
 
             elif definition in [int, str, datetime, bool, dict]:
                 serialised[key] = self.__dict__[key]
 
-            elif Model in definition.__bases__:
-                serialised[key] = self.__dict__[key].serialise()
+            else:
+                pass            
 
         return serialised
 

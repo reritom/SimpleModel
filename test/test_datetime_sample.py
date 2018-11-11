@@ -20,6 +20,11 @@ class TestModel(unittest.TestCase):
         except:
             self.fail("Valid datetime assignment failed")
 
+        try:
+            datetime_sample.base = 'Jun 1 2005  1:33PM'
+        except:
+            self.fail("Implicit conversion failed")
+
         with self.assertRaises(ValueError):
             datetime_sample.base = "Hello"
 
