@@ -14,6 +14,17 @@ class ProtectedList(list):
             ))
         return value
 
+    def serialise(self):
+        serialised = []
+
+        for value in self[:]:
+            if hasattr(value, 'serialise'):
+                serialised.append(value.serialise())
+            else:
+                serialised.append(value)
+
+        return serialised
+
     def __init__(self, iterator=[]):
         return super().__init__([self.validate(value) for value in iterator])
 

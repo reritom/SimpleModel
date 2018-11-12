@@ -8,7 +8,7 @@ class Descriptor:
     @classmethod
     def validate(cls, value):
         if not isinstance(value, cls.definition):
-            raise ValueError("Setting invalid type {} to protected list of {}".format(
+            raise ValueError("Setting invalid type {} to descriptor of {}".format(
                 type(value),
                 cls.definition
             ))
