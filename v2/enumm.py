@@ -18,6 +18,7 @@ class Enum():
 
     @classmethod
     def validate(cls, value):
+        print("Validating value {}".format(value))
         if type(value) in cls.definitions or value in cls.definitions:
             return value
 

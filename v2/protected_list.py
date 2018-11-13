@@ -7,6 +7,9 @@ class ProtectedList(list):
 
     @classmethod
     def validate(cls, value):
+        if isinstance(value, list):
+            return cls(value)
+
         if not isinstance(value, cls.definition):
             raise ValueError("Setting invalid type {} to protected list of {}".format(
                 type(value),

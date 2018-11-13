@@ -11,12 +11,11 @@ class GenericSample(GenericBase):
     x: int
     y: str
     z: bool
-'''
+
 @model
 class Sample:
     a: str
     b: int = 1
     c: GenericSample
-    d: [int]
-    e: (str, int, "OK", "KO")
-'''
+    d: [int] = [1]
+    e: (int, str, "OK", "KO") = "OK"
