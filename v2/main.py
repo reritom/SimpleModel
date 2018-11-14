@@ -8,4 +8,8 @@ print("Serialised {}".format(gb.serialise()))
 
 sample = Sample()
 sample.c = gb
-print(sample.serialise())
+serialised = sample.serialise()
+new = Sample.deserialise(serialised)
+
+print(sample.__dict__)
+print(new.__dict__)

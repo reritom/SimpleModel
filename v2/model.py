@@ -57,15 +57,21 @@ class Model:
             if hasattr(value, 'serialise'):
                 # ProtectedList or nested Model
                 serialised[key] = value.serialise()
-            elif Enum in self._descriptors[key].__bases__:
-                pass
+            elif hasattr(self._descriptors[key], 'serialise'):# Enum in self._descriptors[key].__bases__:
+                serialised[key] = self._descriptors[key].serialise(value)
             else:
                 serialised[key] = value
 
         return serialised
 
-    def deserialise(self, serialised):
-        pass
+    @classmethod
+    def deserialise(cls, serialised):
+        self = cls()
+        for key, value in serialised.items():
+            if key in self._descriptors:
+                print("Attempting to deserialise {}, type is {}".format(key, self._descriptors[key]))
+                setattr(self, key, self._descriptors[key].deserialise(value))
+        return self
 
 
     def __getattr__(self, key):

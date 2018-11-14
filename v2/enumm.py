@@ -26,3 +26,20 @@ class Enum():
             value,
             cls.definitions
         ))
+
+    @classmethod
+    def serialise(cls, value):
+        return {value.__class__.__name__: value}
+
+    @classmethod
+    def deserialise(cls, value):
+        assert isinstance(value, dict), "Deserialising enum requires dict, got {}".format(type(value))
+        # Value is a string of a classname
+        class_name = list(value.keys())[0]
+        enum_class_index = [def_class.__name__ if hasattr(def_class, '__name__') else def_class.__class__.__name__ for def_class in cls.definitions].index(class_name)
+        enum_class = cls.definitions[enum_class_index]
+
+        if hasattr(enum_class, 'deserialise'):
+            return enum_class.deserialise(value[class_name])
+        else:
+            return value[class_name]

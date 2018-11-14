@@ -17,6 +17,14 @@ class ProtectedList(list):
             ))
         return value
 
+    @classmethod
+    def deserialise(cls, value):
+        if hasattr(cls.definition, 'deserialise'):
+            value = [cls.definition.deserialise(elem) for elem in value]
+
+        return cls(value)
+
+
     def serialise(self):
         serialised = []
 
