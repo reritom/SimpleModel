@@ -15,15 +15,35 @@ class ProtectedList(list):
                 type(value),
                 cls.definition
             ))
+
+        if hasattr(cls.definition, 'deserialise'):
+            # If we are validating the input from a serialised model, we will need to set a list of serialised components,
+            # which means we might need to attempt to deserialise it first
+            try:
+                value = cls.definition.deserialise(value)
+                return value
+            except:
+                pass
+
         return value
+
+    @classmethod
+    def validate_set(cls, value):
+        if not isinstance(value, list):
+            raise ValueError("Setting invalid type {} to protected list of {}".format(
+                type(value),
+                cls.definition
+            ))
+
+        return cls(value)
 
     @classmethod
     def deserialise(cls, value):
         if hasattr(cls.definition, 'deserialise'):
+            print("DESE {} {}".format(value, cls.definition))
             value = [cls.definition.deserialise(elem) for elem in value]
 
         return cls(value)
-
 
     def serialise(self):
         serialised = []

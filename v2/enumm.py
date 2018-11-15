@@ -20,7 +20,16 @@ class Enum():
     def validate(cls, value):
         print("Validating value {}".format(value))
         if type(value) in cls.definitions or value in cls.definitions:
+            print("This is ok")
             return value
+
+        # We might be trying to validate a serialised input, which means deserialising it
+        try:
+            print("Trying to deserialise it")
+            value = cls.deserialise(value)
+            return value
+        except:
+            pass
 
         raise ValueError("Value {} does not fit in Enum definitions {}".format(
             value,
