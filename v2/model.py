@@ -7,7 +7,8 @@ from inspect import Parameter, Signature
 class Model:
     def __new__(cls, *args, **kwargs):
         base_annotations = {}
-        for base in reversed(cls.__bases__):
+        print(dir(cls))
+        for base in reversed(getattr(cls, '__bases__', {})):
             base_annotations.update(getattr(base, '__annotations__', {}))
 
         base_annotations = {key: parse_annotation_value(value) for key, value in base_annotations.items()}
@@ -77,13 +78,13 @@ class Model:
             self.__dict__[key] = self._descriptors[key]()
             return self.__dict__[key]
 
-        return self.__dict__[key]
+        raise AttributeError("{} not found in instance {}".format(key, self))
 
     def __setattr__(self, key, value):
         if not key in self._descriptors:
             raise KeyError()
 
-        if ProtectedList in self._descriptors[key].__bases__:
+        if ProtectedList in getattr(self._descriptors[key], '__bases__', []):
             self._descriptors[key].validate_set(value)
         else:
             value = self._descriptors[key].validate(value)

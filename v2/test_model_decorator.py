@@ -9,9 +9,9 @@ class BaseSample:
 class Sample(BaseSample):
     meta: dict
     enum: (int, str,) = 1
-    bases: [BaseSample]
+    numbers: [BaseSample]
 
-class TestModel(unittest.TestCase):
+class TestModelDecorator(unittest.TestCase):
     def test_base_sample_empty_init(self):
         try:
             base_sample = BaseSample()
@@ -60,9 +60,9 @@ class TestModel(unittest.TestCase):
         self.assertEqual(serialised, expected)
 
         # Test deep serialisation of nested model
-        sample.bases.append(base_sample)
+        sample.numbers.append(base_sample)
         serialised = sample.serialise()
-        expected = {'Sample': {'bases': [{'base': 'String'}], 'enum': {'int': 1}}}
+        expected = {'Sample': {'numbers': [{'base': 'String'}], 'enum': {'int': 1}}}
         self.assertEqual(serialised, expected)
 
     def test_sample_invalid_enum(self):
@@ -75,13 +75,12 @@ class TestModel(unittest.TestCase):
             sample.enum = True
 
     def test_nested_deserialise(self):
-        serialised_sample = {'bases': [{'base': 'String'}], 'enum': {'int': 1}}
+        serialised_sample = {'numbers': [{'base': 'String'}], 'enum': {'int': 1}}
         deserialised = Sample.deserialise(serialised_sample)
 
-        self.assertEqual(deserialised.bases[0].base, 'String')
+        self.assertEqual(deserialised.numbers[0].base, 'String')
         self.assertEqual(deserialised.enum, 1)
 
 if __name__=='__main__':
-    serialised_sample = {'bases': [{'base': 'String'}], 'enum': {'int': 1}}
+    serialised_sample = {'numbers': [{'base': 'String'}], 'enum': {'int': 1}}
     deserialised = Sample.deserialise(serialised_sample)
-
